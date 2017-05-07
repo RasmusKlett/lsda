@@ -14,14 +14,19 @@ for doc_id, rows in groupby(kos, lambda row: row[0]):
         (doc_id, np.fromiter((row[1] for row in rows), dtype=int))
     )
 
-# For each combination of tuples compute Jaccard similarity
-jaccards = []
-for (doc_id1, words1), (doc_id2, words2) in combinations(docs, 2):
+
+def calcJaccard(words1, words2):
     union = float(np.union1d(words1, words2).size)
     intersection = float(np.intersect1d(words1, words2).size)
-    jaccards.append(
-        (doc_id1, doc_id2, intersection / union)
-    )
+    return intersection / union
+
+# For each combination of tupes calculate Jaccard similarity
+jaccards = np.fromiter(
+    (calcJaccard(words1, words2)
+        for (_, words1), (_, words2)
+        in combinations(docs, 2)),
+    dtype=np.float64,
+)
 
 print("Mean of Jaccard similarities")
-print(np.mean(list(item[2] for item in jaccards)))
+print(np.mean(jaccards))
