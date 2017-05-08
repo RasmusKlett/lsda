@@ -1,4 +1,5 @@
 import numpy
+import time
 
 docword = numpy.loadtxt("data/docword.kos.txt",skiprows=3,dtype="int")
 # docword=numpy.array([[1,1,1],[1,2,1],[1,3,1],[2,3,1],[2,4,1],[2,5,1]])
@@ -8,7 +9,7 @@ K = 100
 print("Creating identity matrix")
 M = int(max(docword[:, 0]))
 N = int(max(docword[:, 1]))
-
+print(M)
 charac = numpy.zeros((M, N))
 
 for ind in range(len(docword)):
@@ -27,7 +28,7 @@ def hashVal(a, x, b):
 def computeSig():
     print("Computing minHash-matrix")
     signature = numpy.zeros((M, K))
-
+    start=time.time()
     for k in range(K):
         a = numpy.random.randint(1, 100) + 1
         b = numpy.random.randint(1, 100)
@@ -39,6 +40,9 @@ def computeSig():
                 tries += 1
             signature[docId, k] = tries
         print(k)
+    end=time.time()
+    t=end-start
+    print(t)
     return signature
 
 
