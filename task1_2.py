@@ -3,8 +3,6 @@ import numpy
 docword = numpy.loadtxt("data/docword.kos.txt",skiprows=3,dtype="int")
 # docword=numpy.array([[1,1,1],[1,2,1],[1,3,1],[2,3,1],[2,4,1],[2,5,1]])
 
-K = 100
-
 print("Creating identity matrix")
 M = int(max(docword[:, 0]))
 N = int(max(docword[:, 1]))
@@ -24,7 +22,7 @@ def hashVal(a, x, b):
     return h
 
 
-def computeSig():
+def computeSig(K):
     print("Computing minHash-matrix")
     signature = numpy.zeros((M, K))
 
@@ -42,7 +40,7 @@ def computeSig():
     return signature
 
 
-def computeSimilarities(signatures):
+def computeSimilarities(signatures, K):
     print("Comparing signatures")
     similarities = numpy.zeros((M, M))
     for i in range(M):
@@ -52,7 +50,11 @@ def computeSimilarities(signatures):
     return similarities
 
 
-Sig = computeSig()
-sim = computeSimilarities(Sig)
-print(sim)
-print(sum(sum(sim))/(M*(M-1)/2))
+
+
+if __name__ == "__main__":
+    K = 100
+    Sig = computeSig(K)
+    sim = computeSimilarities(Sig, K)
+    print(sim)
+    print(sum(sum(sim))/(M*(M-1)/2))
