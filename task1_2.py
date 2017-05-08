@@ -47,7 +47,8 @@ def computeSimilarities(signatures):
     similarities = numpy.zeros((M, M))
     for i in range(M):
         for j in range(i+1, M):
-            similarities[i, j] = numpy.sum(signatures[i, :] == signatures[j, :]) / K
+            similarities[i, j] = numpy.sum(signatures[i, :] == signatures[j, :])
+    similarities = similarities / K
     return similarities
 
 
