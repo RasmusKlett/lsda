@@ -8,9 +8,10 @@ import tensorflow as tf
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('summary_dir', '/tmp/logLog', 'directory to put the summary data')
+flags.DEFINE_string('run_name', '', 'Name of run used for logging')
 flags.DEFINE_string('data_dir', '../data', 'directory with data')
 flags.DEFINE_integer('maxIter', 10000, 'number of iterations')
-flags.DEFINE_float('learning_rate',0.1,'learning rate')
+flags.DEFINE_float('learning_rate', 0.1, 'learning rate')
 
 
 # Read data
@@ -42,7 +43,7 @@ with tf.name_scope('loss') as scope:
     tf.summary.scalar('cross-entropy', loss)
 
 # Declare optimizer
-my_opt = tf.train.GradientDescentOptimizer(FLAGS.learning_rate)
+my_opt = tf.train.GradientDescentOptimizer(learning_rate=FLAGS.learning_rate)
 train_step = my_opt.minimize(loss)
 
 # Map model output to binary predictions
@@ -53,10 +54,13 @@ with tf.name_scope('0-1-loss') as scope:
     accuracy = tf.reduce_mean(predictions_correct)
     tf.summary.scalar('accuracy', accuracy)
 
+
+run_name = "/" + FLAGS.run_name if FLAGS.run_name != "" else ""
+
 # Logging
 merged = tf.summary.merge_all()
-train_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/train')
-test_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/test')
+train_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/train' + run_name, sess.graph)
+test_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/test' + run_name)
 
 # Initialize variables
 init = tf.global_variables_initializer()
