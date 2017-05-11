@@ -5,7 +5,7 @@ subset.sort()
 print(subset[1:20])
 position = 0
 with open("../../data/landsat_train.csv", "r") as in_file:
-    with open("../../data/landset_train_subset.csv", "w") as out_file:
+    with open("../../data/landsat_train_subset.csv", "w") as out_file:
 
         for idx, line in enumerate(in_file):
             if subset[position] == idx:
