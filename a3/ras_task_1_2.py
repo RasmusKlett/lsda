@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from pickle import dump, load
+from pickle import dump
 
 landsat_subset = np.loadtxt(
     "../../data/landsat_train_subset.csv",
@@ -16,8 +16,13 @@ forest = RandomForestClassifier(
     min_samples_split=2,
     max_features=None,
 )
+X = landsat_subset[:, 1:-1]
+Y = landsat_subset[:, 0]
 
-forest.fit(landsat_subset[:, 1:-1], landsat_subset[:, 0])
+forest.fit(X, Y)
+
+training_score = forest.score(X, Y)
+print("Training set score", training_score)
 
 
 with open("../../data/pickleTree.p", "wb") as picle_file:
