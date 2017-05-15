@@ -1,10 +1,8 @@
 #run restoreImage first
 
-import numpy as np
-import Image
+from pylab import *
 
-pixels=np.loadtxt("../../data/image.csv",delimiter=",")
-pixels=pixels*255/8
-im=Image.fromarray(pixels)
-im.show()
+pixels=np.loadtxt("../../data/image.csv",delimiter=",")/8
 
+imshow(pixels)
+show()

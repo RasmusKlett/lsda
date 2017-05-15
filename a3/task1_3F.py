@@ -1,9 +1,11 @@
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 import pickle
+import time
 
 model=pickle.load(open("../../data/pickleTree.p", "rb"))
 
+start=time.time()
 lines_pr_chunk=10000
 chunk_size=lines_pr_chunk*10
 chunk=np.empty((0,chunk_size))
@@ -22,7 +24,7 @@ with open("../../data/landsat_train_remaining.csv", "r") as in_file:
 
             y=chunk[:,0]
             X=chunk[:,1:]
-            score=np.add(score,sum(model.predict(X)==y)/len(y))
+            score=np.add(score,float(sum(model.predict(X)==y))/len(y))
 
             chunk=[]
             i+=1
@@ -34,5 +36,11 @@ if np.size(chunk,0)<chunk_size:
     y=chunk[:,0]
     X=chunk[:,1:]
     score=np.add(score,sum(model.predict(X)==y)/len(y))
-print score/i
+ 
+end=time.time()
+t=end-start
+
+print("Execution time: ",t)
+ 
+print("Accuracy: ", float(score)/i)
 
