@@ -8,7 +8,7 @@ from scipy import stats
 num_trees = 100
 trees_per_forest = 1
 
-run_count = ceil(float(num_trees) / trees_per_forest)
+run_count = int(ceil(float(num_trees) / trees_per_forest))
 
 pickle_dir = "../../data/huge_forest"
 
@@ -62,4 +62,4 @@ if __name__ == "__main__":
     is_right = prediction == dataset[:, 0]
 
     print("Prediction on training data", prediction)
-    print("Accuracy", np.sum(is_right) / dataset.shape[0])
+    print("Accuracy", float(np.sum(is_right)) / dataset.shape[0])

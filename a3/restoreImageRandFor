@@ -1,0 +1,13 @@
+import numpy as np
+from sklearn.ensemble import RandomForestClassifier
+from math import ceil
+from pickle import dump, load
+from scipy import stats
+
+import ras_task_1_4.py as ras
+
+dataset=np.loadtext("../../data/landsat_set.csv", delimiter=",", dtype=int)
+
+predictions=ras.predict(dataset)
+image=predictions.resize((3000,3000))
+np.savetxt("../../data/image_RandFor.csv",image,delimiter=",")
