@@ -7,9 +7,10 @@
 # - Uses mini-batches. These batches are generated using the self-defined "Batcher" object. A version using proper queues is provided by "MLPMiniBatchWeedTensorFlowTensorBoardQueue.py"
 
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
+
 
 # Splits data into mini-batches
 # Batches are not randomized/shuffled, shuffling the data in mini-batch learning typically improves the performance
@@ -21,6 +22,7 @@ class Batcher:
         self.batchStartIndex = 0
         self.batchStopIndex = 0
         self.noData = self.data.data.shape[0]
+
     def nextBatch(self):
         self.batchStartIndex = self.batchStopIndex % self.noData
         self.batchStopIndex = min(self.batchStartIndex + self.batchSize, self.noData)
@@ -30,7 +32,7 @@ class Batcher:
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_string('summary_dir', '/tmp/MLPMiniLog', 'directory to put the summary data')
-flags.DEFINE_string('data_dir', '../data', 'directory with data')
+flags.DEFINE_string('data_dir', '../../data', 'directory with data')
 flags.DEFINE_integer('maxIter', 10000, 'number of iterations')
 flags.DEFINE_integer('batchSize', 64, 'batch size')
 flags.DEFINE_integer('noHidden1', 64, 'size of first hidden layer')
@@ -56,10 +58,12 @@ sess = tf.Session()
 x_data = tf.placeholder(shape=[None, inDim], dtype=tf.float32, name='input')
 y_target = tf.placeholder(shape=[None, 1], dtype=tf.float32, name='target')
 
+
 # Define variables
 def weight_variable(shape):
-    initial = tf.truncated_normal(shape, stddev=0.1) # restrict to +/- 2*stddev
+    initial = tf.truncated_normal(shape, stddev=0.1)  # restrict to +/- 2*stddev
     return tf.Variable(initial, name='weights')
+
 
 def bias_variable(shape):
     initial = tf.truncated_normal(shape, stddev=0.1)
@@ -71,7 +75,7 @@ with tf.name_scope('layer1') as scope:
     W_1 = weight_variable([inDim, FLAGS.noHidden1])
     b_1 = bias_variable([FLAGS.noHidden1])
     y_1 = tf.nn.sigmoid(tf.matmul(x_data, W_1) + b_1)
-    
+
 
 with tf.name_scope('layer2') as scope:
     W_2 = weight_variable([FLAGS.noHidden1, 1])
@@ -84,7 +88,7 @@ loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=model_outpu
 tf.summary.scalar('cross-entropy', loss)
 
 # Declare optimizer
-my_opt =  tf.train.GradientDescentOptimizer(FLAGS.lr)
+my_opt = tf.train.GradientDescentOptimizer(FLAGS.lr)
 train_step = my_opt.minimize(loss)
 
 # Map model output to binary predictions
@@ -98,9 +102,9 @@ tf.summary.scalar('accuracy', accuracy)
 merged = tf.summary.merge_all()
 train_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/train')
 test_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/test')
-validate_writer=  tf.summary.FileWriter(FLAGS.summary_dir + '/validate')
+validate_writer = tf.summary.FileWriter(FLAGS.summary_dir + '/validate')
 writer = tf.summary.FileWriter(FLAGS.summary_dir, sess.graph)
-saver = tf.train.Saver() # for storing the best network
+saver = tf.train.Saver()  # for storing the best network
 
 # Initialize variables
 init = tf.global_variables_initializer()
@@ -118,7 +122,7 @@ for i in range(FLAGS.maxIter):
     sess.run(train_step, feed_dict={x_data: xTrain, y_target: np.transpose([yTrain])})
     summary = sess.run(merged, feed_dict={x_data: xTrain, y_target: np.transpose([yTrain])})
     train_writer.add_summary(summary, i)
-    if((i+1)%100==0):
+    if((i + 1) % 100 == 0):
         print("Iteration:",i+1,"/",FLAGS.maxIter)
         summary = sess.run(merged, feed_dict={x_data: dataTest.data, y_target: np.transpose([dataTest.target])})
         test_writer.add_summary(summary, i)
@@ -127,7 +131,7 @@ for i in range(FLAGS.maxIter):
         if(currentValidation > bestValidation):
             bestValidation = currentValidation
             saver.save(sess=sess, save_path=FLAGS.summary_dir + '/bestNetwork')
-            print("\tbetter network stored,",currentValidation,">",bestValidation)
+            print("\tbetter network stored,", currentValidation, ">", bestValidation)
 
 # Print values after last training step
 print("final training accuracy:", sess.run(accuracy, feed_dict={x_data: dataTrain.data, y_target: np.transpose([dataTrain.target])}),
@@ -139,6 +143,3 @@ saver.restore(sess=sess, save_path=FLAGS.summary_dir + '/bestNetwork')
 print("best training accuracy:", sess.run(accuracy, feed_dict={x_data: dataTrain.data, y_target: np.transpose([dataTrain.target])}),
       "best test accuracy: ", sess.run(accuracy, feed_dict={x_data: dataTest.data, y_target: np.transpose([dataTest.target])}),
       "best validation accuracy: ", sess.run(accuracy, feed_dict={x_data: dataValidate.data, y_target: np.transpose([dataValidate.target])}))
-
-
-
