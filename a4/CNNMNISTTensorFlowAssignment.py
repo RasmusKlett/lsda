@@ -90,6 +90,11 @@ correct_prediction = tf.equal(tf.argmax(y_conv,1), tf.argmax(y_,1)) # second arg
 # Average 0-1 loss
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
+
+# Logging
+train_writer = tf.summary.FileWriter("/tmp/logLog", sess.graph)
+
+
 # Run
 sess.run(tf.global_variables_initializer()) # initialize variables
 with sess.as_default():
