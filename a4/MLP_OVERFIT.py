@@ -17,6 +17,7 @@ import tensorflow as tf
 class Batcher:
     'Splits data into mini-batches'
     def __init__(self, data, batchSize):
+        print(type(data))
         self.data = data
         self.batchSize = batchSize
         self.batchStartIndex = 0
@@ -36,7 +37,8 @@ flags.DEFINE_string('data_dir', '../../data', 'directory with data')
 flags.DEFINE_integer('maxIter', 10000, 'number of iterations')
 flags.DEFINE_integer('batchSize', 64, 'batch size')
 flags.DEFINE_integer('noHidden1', 64, 'size of first hidden layer')
-flags.DEFINE_integer('noHidden2', 32, 'size of second hidden layer')
+flags.DEFINE_integer('noHidden2', 64, 'size of second hidden layer')
+flags.DEFINE_integer('noHidden3', 32, 'size of third hidden layer')
 flags.DEFINE_float('lr', 0.001, 'initial learning rate')
 
 # Read data
@@ -82,9 +84,14 @@ with tf.name_scope('layer2') as scope:
     y_2 = tf.nn.sigmoid(tf.matmul(y_1, W_2) + b_2)
 
 with tf.name_scope('layer3') as scope:
-    W_3 = weight_variable([FLAGS.noHidden2, 1])
-    b_3 = bias_variable([1])
-    model_output = tf.matmul(y_2, W_3) + b_3
+    W_3 = weight_variable([FLAGS.noHidden2, FLAGS.noHidden3])
+    b_3 = bias_variable([FLAGS.noHidden3])
+    y_3 = tf.nn.sigmoid(tf.matmul(y_2, W_3) + b_3)
+
+with tf.name_scope('layer4') as scope:
+    W_4 = weight_variable([FLAGS.noHidden3, 1])
+    b_4 = bias_variable([1])
+    model_output = tf.matmul(y_3, W_4) + b_4
 
 
 # Declare loss function
