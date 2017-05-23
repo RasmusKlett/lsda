@@ -36,6 +36,9 @@ def conv2d(x, W):
 def max_pool_2x2(x):
     return tf.nn.max_pool(x, ksize=[1, 2, 2, 1],
                           strides=[1, 2, 2, 1], padding='SAME')
+def max_pool_4x4(x):
+    return tf.nn.max_pool(x, ksize=[1, 4, 4, 1],
+                          strides=[1, 4, 4, 1], padding='SAME')
 
 
 # Reshape flat input to 2D image with single channel, [number of images, x, y, number of channels]
@@ -49,6 +52,8 @@ b_conv1 = bias_variable([32])
 h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1) # convolve, add bias, apply ReLU
 h_pool1 = max_pool_2x2(h_conv1) # max pooling, resulting feature maps are 14x14
 
+h_pool_shortcut = max_pool_4x4(h_conv1) # max pooling, resulting feature maps are 14x14
+
 # Second convolutional layer with pooling, map the 32 output channels from previous layer to 64 output channels
 W_conv2 = weight_variable([5, 5, 32, 64])
 b_conv2 = bias_variable([64])
@@ -58,11 +63,13 @@ h_pool2 = max_pool_2x2(h_conv2) # max pooling, resulting feature maps are 7x7
 
 # Fully connected layer
 # W_fc1: [inputs, number of neurons]
-W_fc1 = weight_variable([7 * 7 * 64, 1024])
+W_fc1 = weight_variable([7 * 7 * (64 + 32), 1024])
 b_fc1 = bias_variable([1024])
 
-h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64]) # flatten all 64 output 7x7 maps
-h_fc1 = tf.nn.relu(tf.matmul(h_pool2_flat, W_fc1) + b_fc1)
+h_pool2_flat = tf.reshape(h_pool2, [-1, 7*7*64], name="pool2") # flatten all 64 output 7x7 maps
+h_pool_shortcut_flat = tf.reshape(h_pool_shortcut, [-1, 7*7*32], name="pool_shortcut")
+h_pool_concatted = tf.concat([h_pool_shortcut_flat, h_pool2_flat], 1)
+h_fc1 = tf.nn.relu(tf.matmul(h_pool_concatted, W_fc1) + b_fc1)
 
 # Dropout (optional)
 keep_prob = tf.placeholder(tf.float32) # probability that each element is kept
