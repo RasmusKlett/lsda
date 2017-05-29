@@ -83,13 +83,16 @@ y_conv = tf.matmul(h_fc1_drop, W_fc2) + b_fc2 # output of readout layer, logits/
 
 # Training
 # Loss function
+reg_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_losses)
+lambd = 0.01
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y_conv))
 my_opt = tf.train.AdamOptimizer(learning_rate=0.001, 
                                 beta1=0.9, 
                                 beta2=0.999, 
                                 epsilon=1e-08)
-                                
-train_step = my_opt.minimize(cross_entropy)
+                 
+loss_fun = cross_entropy + (lambd * reg_losses)               
+train_step = my_opt.minimize(loss_fun)
 # Adam optimizer, default parameters learning_rate=0.001, beta1=0.9, beta2=0.999, epsilon=1e-08
 
 # 0-1 loss
