@@ -39,12 +39,12 @@ for i in range(n_features):
         
 
     winner = untouched[np.argmin(error)]
-    np.delete(untouched,np.argmin(error))
+    untouched=np.delete(untouched,np.argmin(error))
     picked.append(winner)
     MSE.append(np.min(error)/total_instances)
     num=i+1
     print("%i features chosen: " % num, picked)
-    print("Validation error: ", np.min(error/total_instances) )
+    print("Validation error: ", np.min(error)/total_instances )
     
 
 
