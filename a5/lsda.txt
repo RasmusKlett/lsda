@@ -1,0 +1,13 @@
+I love Hadoop! Really, I cannot 
+live without Hadoop anymore. In
+particular, I love this word 
+count example...
+
+Of course, I could count all these
+words on my own. But why should I 
+do this? I can use the fancy mapper
+and reducer files and let them do
+all the hard work. Just have to 
+figure out how to do it! Let's just
+use the word Hadoop a couple of times: 
+Hadoop, Hadoop, Hadoop. Wonderful!
