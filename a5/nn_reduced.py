@@ -37,3 +37,7 @@ extime=time.time()-start
 print("Predictions computed for %i patterns ...!" % len(preds))
 print("Mean of predictions: %f" % numpy.mean(numpy.array(preds)))
 print("Execution time of testing phase: %f" % extime)
+
+diff=numpy.subtract(preds,ytest)
+MSEtest=numpy.sqrt(numpy.dot(diff,diff))/Xtest.shape[0]
+print("MSE on test data: ", MSEtest)

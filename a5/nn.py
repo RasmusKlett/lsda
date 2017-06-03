@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # NOTE: Use your the virtual machine to execute this code and
 #       keep the memory allocated for the machine to 2GB!
 
