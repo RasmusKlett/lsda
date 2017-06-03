@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import sys
 
-# Skip the header
-sys.stdin.readline()
-
 # Where do these lines come from?
 # This is done by Hadoop Streaming ...
 for line in sys.stdin:
+    # Skip the header
+    if line.startswith("\"FL_DATE"):
+        continue
 
     # Remove whitespace and split up line
     # into words (whitespace as delimiter)
